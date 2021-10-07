@@ -31,7 +31,7 @@ The fellowing are websites that we used to gain ideas and understanding for the 
     Please note additional sources and changes may be made later.
 
 Example Js Librarys 
-Based on internet research the below links where: 
+General examples: 
 
 1. https://popper.js.org/ the following libarary could help with labels on the map. 
 
@@ -42,6 +42,8 @@ Based on internet research the below links where:
 Web page layout
 
 1. Landing page 
-        - Web page title "World Agricultural Map"
-        - World map generatord interactive elements:
-                    - 
+        = Web page title "World Agricultural Map"
+        = A user can explore the interactive map by placing the mouse over a certain country which triggers a small information box that contains general agricultural facts.               Example Import & export value in US dollars, most popular export item. 
+        = If the user wants more detailed information clicking on the country would generate graphs that represent grains, vegetable and meat exports providing the ability to             compare historical data. 
+        
+Work Break donw. 
