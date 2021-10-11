@@ -1,52 +1,182 @@
+* {
+  box-sizing: border-box;
+  font-family: Ubuntu, sans-serif;
+}
+
+html,
 body {
-  padding: 0;
-  margin: 0;
-}
-
-#map,
-body,
-html {
   height: 100%;
-}
-
-.leaflet-popup-content {
-  text-align: center;
-}
-
-/* CSS from the Leaflet-Choropleth documentation */
-.legend {
-  padding: 6px 8px;
-  font: 12px Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  color: #555;
-  background: #fff;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 5px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-}
-
-.legend ul {
   padding: 0;
   margin: 0;
-  clear: both;
-  list-style-type: none;
 }
 
-.legend li {
-  display: inline-block;
-  width: 30px;
-  height: 22px;
+/* The wrapper contains all of the page's content besides the footer, which is pushed to the bottom of the page */
+.wrapper {
+  position: relative;
+  min-height: 100%;
+  padding-bottom: 130px;
+  overflow: auto;
+  background-color: whitesmoke;
 }
 
-.legend .min {
-  float: left;
-  padding-bottom: 5px;
+/* The footer is positioned at the bottom of the page */
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 100px;
+  background: whitesmoke;
 }
 
-.legend .max {
-  float: right;
+/* The code styles the text at the bottom of the footer */
+.footer > .bottom {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 5px;
+  background: green;
 }
 
-h1 {
-  text-align: center;
+.navbar {
+  padding: 5px;
+  margin: 0;
+}
+
+/* This CSS styles the ufo icon in the navbar */
+.nav-ufo {
+  position: absolute;
+  bottom: 5px;
+  left: 250px;
+  width: 35px;
+  color: black;
+}
+
+/* Adding styles to the aside and filter form */
+.ufo-form {
+  margin-top: 50px;
+}
+
+.filters .panel-body {
+  padding: 0;
+}
+
+.filters {
+  margin-top: 10px;
+}
+
+select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  color: whitesmoke;
+  outline: none;
+}
+
+.loader {
+  margin-top: 50px;
+}
+
+.margin-top-50 {
+  margin-top: 50px;
+}
+
+/* The styles for the parallax */
+.hero {
+  position: relative;
+  height: 550px;
+  padding: 20px;
+  margin: 0;
+  background: black;
+  background-image: url("https://leica-geosystems.com/-/media/images/leicageosystems/industries/thumbnails%20800x428/agriculture_portfolio_leica_geosystems_800x428.ashx?h=428&la=en&w=800&hash=E3C2C629890C8A0D792270319035CD6E");
+  background-attachment: fixed;
+  background-position: bottom center;
+  background-size: cover;
+}
+
+.hero h1 {
+  margin-top: 200px;
+  font-size: 0.1rem;
+  background-color: gold;
+  animation: title 1.2s forwards linear;
+}
+
+.hero p {
+  font-size: 3rem;
+  background-color: gold;
+  opacity: 0;
+  animation: subtitle 1.2s forwards linear;
+  animation-delay: 1.2s;
+}
+
+/* input placeholder color changes */
+.form-control::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  color: whitesmoke;
+}
+
+.form-control::-moz-placeholder {
+  /* Firefox 19+ */
+  color: whitesmoke;
+}
+
+.form-control:-ms-input-placeholder {
+  /* IE 10+ */
+  color: whitesmoke;
+}
+
+.form-control:-moz-placeholder {
+  /* Firefox 18- */
+  color: whitesmoke;
+}
+
+/* media queries which will only be activated at specific screen sizes */
+@media (max-width: 800px) {
+  #table-area td {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 500px) {
+  #table-area thead {
+    display: none;
+  }
+
+  .hero h1 {
+    animation: smaller-title 1.2s forwards linear;
+  }
+}
+
+/* keyframe animations which will be used to animate the title */
+@keyframes title {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    font-size: 7.5rem;
+    opacity: 1;
+  }
+}
+
+@keyframes smaller-title {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    font-size: 6.5rem;
+    opacity: 1;
+  }
+}
+
+@keyframes subtitle {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
