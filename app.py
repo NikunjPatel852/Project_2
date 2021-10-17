@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','') or f"postgres://{UserName}:{Password}@localhost:5432/{DataBase}"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','') or f"postgresql://{UserName}:{Password}@localhost:5432/{DataBase}"
 db = SQLAlchemy(app)
 
 # reflect an existing database into a new model
@@ -49,6 +49,47 @@ def countrieslist():
     # countries = list(np.ravel(list_countries))
     # print(countries)
     return jsonify(countries)
+
+
+# for the country
+@app.route("/<country>/stats")
+def countryStats(country):
+    print(country)
+    export_rs = db.session.execute(""" 
+    select sum(value) as value2, year
+from worlddata 
+where rep_countries = :country and element = 'Export Value'
+group by year
+    """, {"country":country})
+    export_stats = []
+    for stat in export_rs:
+        export_stats.append({
+            "value": stat["value2"],
+            "year": stat["year"]
+        
+        })
+    return jsonify(export_stats)
+
+
+# for the year (to be changed)
+@app.route("/<country>/stats")
+def countryStats(country):
+    print(country)
+    export_rs = db.session.execute(""" 
+    select sum(value) as value2, year
+from worlddata 
+where rep_countries = :country and element = 'Export Value'
+group by year
+    """, {"country":country})
+    export_stats = []
+    for stat in export_rs:
+        export_stats.append({
+            "value": stat["value2"],
+            "year": stat["year"]
+        })
+
+
+
 
 @app.route("/api/v1.1/yearslist")
 def yearslist():
