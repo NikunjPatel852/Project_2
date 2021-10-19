@@ -5,7 +5,7 @@ Project Description
 In the globalisations of economies brought opportunities for nations to reach a large group of consumers. As populations increased around the world the demand for agricultural goods increased, significant growth in the sector around large scale farming and technological advancement helped to feed the worl population. Our aim is to create a map that illustrates agricultural data in a visually appealing package of illustrations for consumers to interact with in some manner. 
 
 To load the orignal data set you'll need to vist the fellowing site due to upload ristrictions : https://www.fao.org/faostat/en/#data/TI
-
+Google slides = https://docs.google.com/presentation/d/1RHOSOFCNywKXwxLDZIwi24Px8RTlWXpZ5U1XMEBg7os/edit?usp=sharing
 Data Sourcing 
 Predominantly sourcing data from different government agencies and trade organisations such as:
 
