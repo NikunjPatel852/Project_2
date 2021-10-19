@@ -85,7 +85,7 @@ select {
 .hero {
   position: relative;
   height: 550px;
-  padding: 20px;
+  padding: 100px;
   margin: 0;
   background: black;
   background-image: url("https://leica-geosystems.com/-/media/images/leicageosystems/industries/thumbnails%20800x428/agriculture_portfolio_leica_geosystems_800x428.ashx?h=428&la=en&w=800&hash=E3C2C629890C8A0D792270319035CD6E");

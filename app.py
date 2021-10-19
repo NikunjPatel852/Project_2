@@ -33,8 +33,16 @@ worlddata = Base.classes.worlddata
 @app.route("/")
 def index():
     """Return the homepage."""
+    return render_template("index.html")
+
+@app.route("/example")
+def example():
     bar1 = fig1()
-    return render_template("index.html", plot=bar1)
+    bar2 = fig2()
+    bar3 = fig3()
+    bar4 = fig4()
+    bar5 = fig5()
+    return render_template("example.html", plot=bar1, plot1=bar2, plot2=bar3, plot3=bar4, plot4=bar5)
 
 @app.route("/countrieslist")
 def countrieslist():
@@ -106,12 +114,13 @@ def importvaldata(country):
     #     worlddata.value, 
     #     worlddata.item).filter_by(rep_countries= ':country',element= 'Import Value', {"country":country}).limit(10000).all()
     
-    import_data = db.session.execute("""select rep_countries,par_countries,year,element,value,item from worlddata where rep_countries = :country and (element = 'Import Value' or element = 'Import Quantity')""", {"country":country})
+    import_data = db.session.execute("""select rep_countries,par_countries,year,element,unit,value,item from worlddata where rep_countries = :country and (element = 'Import Value' or element = 'Import Quantity')""", {"country":country})
     importV= pd.DataFrame(import_data, columns=[
         'rep_countries', 
         'par_countries', 
         'year',
-        'element', 
+        'element',
+        'unit', 
         'value', 
         'item'])
     
@@ -125,12 +134,13 @@ def importvaldata(country):
         'p_a_r___c_o_u_n_t_r_i_e_s': 'par_countries',
         'y_e_a_r': 'year',
         'e_l_e_m_e_n_t': 'element',
+        'u_n_i_t': 'unit', 
         'v_a_l_u_e': 'value',
         'i_t_e_m': 'item'})
     
     importV3 = importV2.sort_values('value',ascending=False).reset_index()
     #importV3.head()
-    importV4 = importV3.drop(columns=['element','index'])
+    importV4 = importV3.drop(columns=['index'])
     importV4 = importV4[importV4.value !=0]
     #importV4.head(50)
     importV5 = importV4.to_json(orient='records')
@@ -342,7 +352,7 @@ def fig1():
     map_test = exportV[exportV.element == 'Import Value']
     map_test = map_test[map_test.value >= 100000]
     map_test = map_test[map_test.value != 0].sort_values('value', ascending=False).reset_index().drop(columns=['index'])
-    fig1 = px.bar(map_test, x="year", y="value",barmode='group',hover_data=['par_countries','item', 'value', 'element'], color="value", labels=())
+    fig1 = px.bar(map_test, x="year", y="value",barmode='group',hover_data=['par_countries','item', 'value', 'element'], color="value", title='Total Import Value')
     fig1["layout"].pop("updatemenus")
     graphJSON1 = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -438,6 +448,40 @@ def fig4():
     graphJSON4 = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
 
     return graphJSON4
+
+def fig5():
+    # Create our session (link) from Python to the DB
+    session = Session(db.engine)
+
+    portv = session.query(
+    worlddata.rep_countries, 
+    worlddata.par_countries, 
+    worlddata.year, 
+    worlddata.element, 
+    worlddata.value, 
+    worlddata.item).filter_by(rep_countries='United States of America').all()
+
+    portV= pd.DataFrame(portv, columns=[
+        'rep_countries', 
+        'par_countries', 
+        'year','element', 
+        'value', 
+        'item'])
+
+    map_test7 = portV[portV.element == 'Import Value']
+    map_test7 = map_test7[map_test7.value >= 100000]
+    map_test7 = map_test7[map_test7.value != 0].sort_values('value', ascending=True).reset_index().drop(columns=['index']).head(10000)
+    map_test7
+
+    fig5 = px.bar(map_test7, x="year", y="value",barmode='group',hover_data=['par_countries','item', 'value', 'element'], color="value", title='Total Import Value')
+
+    fig5["layout"].pop("updatemenus")
+
+    graphJSON5 = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return graphJSON5
+
+
 
 if __name__ == "__main__":
     app.debug = False
