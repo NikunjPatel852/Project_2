@@ -3,6 +3,9 @@ from numpy.core.fromnumeric import reshape
 import pandas as pd
 import json
 import numpy as np 
+import plotly.express as px
+import plotly
+import plotly.graph_objs as go
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session,sessionmaker
@@ -30,7 +33,8 @@ worlddata = Base.classes.worlddata
 @app.route("/")
 def index():
     """Return the homepage."""
-    return render_template("index.html")
+    bar1 = fig1()
+    return render_template("index.html", plot=bar1)
 
 @app.route("/countrieslist")
 def countrieslist():
@@ -51,8 +55,6 @@ def countrieslist():
     # print(results)
     return jsonify(results)
 
-
-# for the country
 @app.route("/<country>/exporttotalvalue")
 def exportcountryStats(country):
     print(country)
@@ -68,7 +70,8 @@ def exportcountryStats(country):
             "value": stat["value2"],
             "year": stat["year"]
         })
-    return jsonify(export_stats)
+    expo_st = export_stats.to_json(orient='records')
+    return expo_st
 
 @app.route("/<country>/importtotalvalue")
 def importcountryStats(country):
@@ -103,7 +106,7 @@ def importvaldata(country):
     #     worlddata.value, 
     #     worlddata.item).filter_by(rep_countries= ':country',element= 'Import Value', {"country":country}).limit(10000).all()
     
-    import_data = db.session.execute("""select rep_countries,par_countries,year,element,value,item from worlddata where element = 'Import Value' and rep_countries = :country""", {"country":country})
+    import_data = db.session.execute("""select rep_countries,par_countries,year,element,value,item from worlddata where rep_countries = :country and (element = 'Import Value' or element = 'Import Quantity')""", {"country":country})
     importV= pd.DataFrame(import_data, columns=[
         'rep_countries', 
         'par_countries', 
@@ -226,8 +229,9 @@ def importquantdata():
     
     return importV5
 
-@app.route("/australia/exportvaluedata")
-def exportvaldata():
+@app.route("/<country>/exportvaluedata")
+def exportvaldata(country):
+    print(country)
     # Create our session (link) from Python to the DB
     session = Session(db.engine)
 
@@ -241,7 +245,7 @@ def exportvaldata():
     #     worlddata.value, 
     #     worlddata.item).filter_by(
     #         element= 'Export Value', year = 2012).limit(1000).all()
-    exportv = db.session.execute("""select rep_countries,par_countries,year,element,unit,value,item from worlddata where rep_countries = 'Australia' and (element = 'Export Value' or element = 'Export Quantity')""")
+    exportv = db.session.execute("""select rep_countries,par_countries,year,element,unit,value,item from worlddata where rep_countries =:country and (element = 'Export Value' or element = 'Export Quantity')""", {"country":country})
     exportV= pd.DataFrame(exportv, columns=[
         'rep_countries', 
         'par_countries', 
@@ -315,6 +319,125 @@ def exportquantdata():
     exportV5 = exportV4.to_json(orient='records')
     
     return exportV5
+
+def fig1():
+    # Create our session (link) from Python to the DB
+    session = Session(db.engine)
+
+    exportv = session.query(
+    worlddata.rep_countries, 
+    worlddata.par_countries, 
+    worlddata.year, 
+    worlddata.element, 
+    worlddata.value, 
+    worlddata.item).filter_by(rep_countries='Australia').all()
+
+    exportV= pd.DataFrame(exportv, columns=[
+        'rep_countries', 
+        'par_countries', 
+        'year','element', 
+        'value', 
+        'item'])
+
+    map_test = exportV[exportV.element == 'Import Value']
+    map_test = map_test[map_test.value >= 100000]
+    map_test = map_test[map_test.value != 0].sort_values('value', ascending=False).reset_index().drop(columns=['index'])
+    fig1 = px.bar(map_test, x="year", y="value",barmode='group',hover_data=['par_countries','item', 'value', 'element'], color="value", labels=())
+    fig1["layout"].pop("updatemenus")
+    graphJSON1 = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return graphJSON1
+
+def fig2():
+    # Create our session (link) from Python to the DB
+    session = Session(db.engine)
+
+    exportv = session.query(
+    worlddata.rep_countries, 
+    worlddata.par_countries, 
+    worlddata.year, 
+    worlddata.element, 
+    worlddata.value, 
+    worlddata.item).filter_by(rep_countries='Australia').all()
+
+    exportV= pd.DataFrame(exportv, columns=[
+        'rep_countries', 
+        'par_countries', 
+        'year','element', 
+        'value', 
+        'item'])
+
+    map_test2 = exportV[exportV.element == 'Import Quantity']
+    map_test2 = map_test2[map_test2.value >= 10000]
+
+    
+    fig2 = px.bar(map_test2, x="year", y="value",barmode='group',hover_data=['par_countries','item', 'value', 'element'], color="value", labels=())
+    fig2["layout"].pop("updatemenus")
+
+    graphJSON2 = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return graphJSON2
+
+def fig3():
+    # Create our session (link) from Python to the DB
+    session = Session(db.engine)
+
+    exportv = session.query(
+    worlddata.rep_countries, 
+    worlddata.par_countries, 
+    worlddata.year, 
+    worlddata.element, 
+    worlddata.value, 
+    worlddata.item).filter_by(rep_countries='Australia').all()
+
+    exportV= pd.DataFrame(exportv, columns=[
+        'rep_countries', 
+        'par_countries', 
+        'year','element', 
+        'value', 
+        'item'])
+
+   
+    map_test3 = exportV[exportV.element == 'Export Value']
+    map_test3 = map_test3[map_test3.value >= 100000]
+    map_test3 = map_test3[map_test3.value != 0].sort_values('value', ascending=True).reset_index().drop(columns=['index'])
+
+    fig3 = px.bar(map_test3, x="year", y="value",barmode='group',hover_data=['par_countries','item', 'value', 'element'], color="value", labels=())
+    fig3["layout"].pop("updatemenus")
+
+    graphJSON3 = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return graphJSON3
+
+def fig4():
+    # Create our session (link) from Python to the DB
+    session = Session(db.engine)
+
+    exportv = session.query(
+    worlddata.rep_countries, 
+    worlddata.par_countries, 
+    worlddata.year, 
+    worlddata.element, 
+    worlddata.value, 
+    worlddata.item).filter_by(rep_countries='Australia').all()
+
+    exportV= pd.DataFrame(exportv, columns=[
+        'rep_countries', 
+        'par_countries', 
+        'year','element', 
+        'value', 
+        'item'])
+
+    map_test4 = exportV[exportV.element == 'Export Quantity']
+    map_test4 = map_test4[map_test4.value >= 100000]
+    map_test4 = map_test4[map_test4.value != 0].sort_values('value', ascending=True).reset_index().drop(columns=['index'])
+
+    fig4 = px.bar(map_test4, x="year", y="value",barmode='group',hover_data=['par_countries','item', 'value', 'element'], color="value", labels=())
+    fig4["layout"].pop("updatemenus")
+
+    graphJSON4 = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return graphJSON4
 
 if __name__ == "__main__":
     app.debug = False

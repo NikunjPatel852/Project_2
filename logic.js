@@ -93,26 +93,26 @@ function updatePlotly() {
     });
 
 
-    // //  var total = `http://127.0.0.1:5000/${dataset}/importtotalvalue`;
+     var total = `http://127.0.0.1:5000/${dataset}/importtotalvalue`;
  
-    // //  d3.json(total).then(function(data) {
-    // //      console.log(data)
+     d3.json(total).then(function(data) {
+         console.log(data)
 
-    // //     //  var valueTotal = unpack[data.value];
-    // //     //  var totalYears = unpack[data.year];
+        //  var valueTotal = unpack[data.value];
+        //  var totalYears = unpack[data.year];
          
-    // //      var trace1 = {
-    // //          data:data,
-    // //          x: "year",
-    // //          y: "value",
-    // //          type: 'scatter'
-    // //        };
+         var trace1 = {
+             data:data,
+             x: "year",
+             y: "value",
+             type: 'scatter'
+           };
            
-    // //        var data = [trace1];
+           var data = [trace1];
            
-    // //        Plotly.newPlot('plot', data);
+           Plotly.newPlot('plot', data);
          
-    //  });
+     });
 
 }
 
